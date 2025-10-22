@@ -1,0 +1,70 @@
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class Flashlight : MonoBehaviour
+{
+
+    public KeyCode toggleKey = KeyCode.F;   // Knap til at tænde og slukke for flashlight 
+    public Light flashlight;                // Lyset, der skal tændes og slukkes
+
+    public float batteryLife = 100f;         // Batteritid i sekunder
+    public float batteryDrainRate = 1f;    // Batteriforbrug hvert sekund når tændt
+    public float batteryRechargeRate = 0.5f; // Batteriets genopladningshastighed hvert sekund når slukket
+
+    public TextMeshProUGUI batteryUIText; // UI Text der skal vise batteriets tilstand
+
+    // Tilføj en AudioSource variabel her og forbind den med en lyd i Unity editoren 
+
+    void Start()
+    {
+        if (flashlight != null)
+        {
+            flashlight.enabled = false; // Start with flashlight off
+        }
+    }
+
+    void Update()
+    {
+        if (flashlight != null)
+        {
+            if (Input.GetKeyDown(toggleKey))
+            {
+                flashlight.enabled = !flashlight.enabled; // Skift imellem tændt og slukket
+
+                //Tilføj kode her for at spille en lyd, når flashlight tændes eller slukkes
+
+            }
+            if (flashlight.enabled)
+            {
+                batteryLife -= Time.deltaTime * batteryDrainRate; // Dræn batteri når tændt
+                UpdateUI();
+                if (batteryLife <= 0)
+                {
+                    flashlight.enabled = false; // Sluk flashlight når batteriet er tomt
+                    batteryLife = 0;
+                }
+            }
+            if (!flashlight.enabled)
+            {
+                batteryLife += Time.deltaTime * (batteryRechargeRate); // Genoplad batteri når slukket
+                UpdateUI();
+                if (batteryLife > 100f)
+                {
+                    batteryLife = 100f; // Stop ved fuld opladning
+                    UpdateUI();
+                }
+
+
+            }
+        }
+    }
+    private void UpdateUI()
+    {
+        if (batteryUIText != null)
+        {
+            batteryUIText.text = "Battery: " + Mathf.RoundToInt(batteryLife) + "%";
+        }
+
+    }
+}
