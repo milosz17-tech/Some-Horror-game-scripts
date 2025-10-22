@@ -1,0 +1,35 @@
+using UnityEngine;
+using UnityEngine.AI;
+
+public class EnemyChase : MonoBehaviour
+{
+    [SerializeField] private Transform player; //Reference til spilleren
+    [SerializeField] private NavMeshAgent agent; // Fjendens NavMeshAgent
+    [SerializeField] private float chaseRange = 10f; // Hvor tæt spilleren skal være før fjenden jagter
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+     void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+    }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (player == null) return; //Hvis der ikke er angivet et plater target i Unity inspectoren, så sker der ikke noget
+
+        float distance = Vector3.Distance(transform.position, player.position);
+        //Hvis spilleren er tæt nok, sæt destination
+        if (distance < chaseRange)
+        {
+            agent.SetDestination(player.position);
+        }
+        else
+        {
+            //stop med at bevæge sig (valgfrit)
+            agent.ResetPath();
+        }
+    }
+}
