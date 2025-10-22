@@ -1,0 +1,46 @@
+using UnityEngine;
+
+public class Door : MonoBehaviour
+{
+    public GameObject requiredItem;
+    bool playerInRange;
+    PlayerInventory inventoryInRange;
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = true;
+            inventoryInRange = other.GetComponent<PlayerInventory>();
+        }
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInRange = false;
+            inventoryInRange = null;
+        }
+    }
+    void Update()
+    {
+        if (!playerInRange) return;
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (inventoryInRange != null)
+            {
+                foreach (GameObject item in inventoryInRange.Inventory)
+                {
+                    if (item != null && item.name == requiredItem.name)
+                    {
+                        Debug.Log("Door unlocked with " + requiredItem.name);
+                        gameObject.SetActive(false);
+                        return;
+                    }
+                }
+                Debug.Log("Door is locked. You need: " + requiredItem.name);
+            }
+        }
+    }
+}
