@@ -1,0 +1,20 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerInventory : MonoBehaviour
+{
+    public List<GameObject> Inventory = new List<GameObject>();
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Item"))
+        {
+            Inventory.Add(other.gameObject);
+            Debug.Log("Picked up: " + other.gameObject.name);
+            other.gameObject.SetActive(false);
+
+        }
+    }
+}
